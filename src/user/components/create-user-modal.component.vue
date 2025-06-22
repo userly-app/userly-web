@@ -13,7 +13,6 @@ const props = defineProps({
 
 const emit = defineEmits(['submit', 'cancel'])
 
-// Inicializar el formulario con valores por defecto
 const form = reactive({
   id: null,
   name: '',
@@ -22,7 +21,6 @@ const form = reactive({
   phone: ''
 })
 
-// Reglas de validación
 const rules = {
   name: {required, minLength: minLength(3)},
   username: {required, minLength: minLength(3)},
@@ -32,14 +30,13 @@ const rules = {
 
 const v$ = useVuelidate(rules, form)
 
-// Cargar los datos del usuario si estamos en modo edición
+// Load the user data for the edit form
 onMounted(() => {
   if (props.user && props.user.id) {
     loadUserData(props.user)
   }
 })
 
-// Actualizar el formulario cuando cambia el usuario
 watch(() => props.user, (newUser) => {
   if (newUser) {
     loadUserData(newUser)
@@ -58,7 +55,6 @@ const handleSubmit = async () => {
   const isValid = await v$.value.$validate()
   if (isValid) {
     try {
-      // Crear una instancia de UserEntity en lugar de un objeto plano
       const userData = new UserEntity(
           form.id,
           form.name,
@@ -67,10 +63,8 @@ const handleSubmit = async () => {
           form.phone
       )
 
-      // Emitir el evento con la instancia de UserEntity
       emit('submit', userData)
 
-      // Limpiar el formulario
       v$.value.$reset()
       if (!form.id) {
         form.name = ''

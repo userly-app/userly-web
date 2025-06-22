@@ -2,18 +2,14 @@
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
-// Router para navegación
 const router = useRouter();
 
-// Estado para el sidebar
 const sidebarVisible = ref(false);
 
-// Función para navegar a las rutas
 const navigateTo = (routeName) => {
   router.push({ name: routeName });
 };
 
-// Función para mostrar/ocultar el sidebar móvil
 const toggleSidebar = () => {
   sidebarVisible.value = !sidebarVisible.value;
 };
@@ -71,7 +67,7 @@ const toggleSidebar = () => {
               <i class="pi pi-home mr-2"></i>Home
             </li>
             <li @click="navigateTo('user'); sidebarVisible = false">
-              <i class="pi pi-users mr-2"></i>Gestión de Usuarios
+              <i class="pi pi-users mr-2"></i>Usuarios
             </li>
           </ul>
         </div>
@@ -143,17 +139,18 @@ const toggleSidebar = () => {
 }
 
 .nav-item {
-  border-radius: var(--border-radius-md) !important;
   transition: var(--transition-normal) !important;
-  color: var(--color-text-primary) !important;
+  color: #e47d22 !important;
   border: none !important;
+  border-radius: 30px;
   padding: 0.75rem 1rem !important;
   font-weight: 500 !important;
 }
 
 .nav-item:hover {
-  background-color: var(--color-accent) !important;
-  color: var(--color-text-primary) !important;
+  border-radius: 30px;
+  background-color: #e47d22 !important;
+  color: white !important;
   transform: translateY(-1px) !important;
   box-shadow: var(--shadow-sm) !important;
 }
@@ -186,30 +183,25 @@ const toggleSidebar = () => {
 
 .sidebar-header {
   padding: 1.5rem;
-  background-color: var(--color-background) !important;
+  background-color: #FFFFFF;
   border: none !important;
 }
 
 .sidebar-header h3 {
-  margin: 0;
   font-size: 1.25rem;
-  color: var(--color-primary);
+  color: var(--color-text-primary);
   font-weight: 600;
 }
 
 .sidebar-user-info {
   display: flex;
   align-items: center;
-  padding: 1.5rem;
-  background-color: var(--color-accent);
+  padding: 0rem 1.5rem ;
   font-weight: 600;
   color: var(--color-text-primary);
   transition: var(--transition-normal);
 }
 
-.sidebar-user-info:hover {
-  background-color: #95C9A3;
-}
 
 .sidebar-content {
   flex: 1;
@@ -244,7 +236,7 @@ const toggleSidebar = () => {
 }
 
 .mobile-menu-list li:hover {
-  background-color: var(--color-accent);
+  background-color: #ece9e9;
   color: var(--color-text-primary);
   transform: translateX(4px);
 }
@@ -256,7 +248,6 @@ const toggleSidebar = () => {
 
 .sidebar-footer {
   padding: 1.5rem;
-  background-color: var(--color-background);
   border: none !important;
 }
 

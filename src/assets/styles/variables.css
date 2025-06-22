@@ -1,11 +1,11 @@
 :root {
   /* Paleta de colores Minimalista - Arena, Carbón, Coral y Menta */
-  --color-background: #F5F1E8;        /* Arena suave - fondo principal */
+  --color-background: #eceaea;        /* Arena suave - fondo principal */
   --color-header: #2C3E50;            /* Carbón suave - texto principal, botones */
   --color-primary: #E67E22;           /* Coral - acentos, botones de acción */
   --color-danger: #E74C3C;            /* Coral más intenso para acciones peligrosas */
   --color-card: #FFFFFF;              /* Blanco puro para tarjetas */
-  --color-text-primary: #2C3E50;      /* Carbón suave para texto principal */
+  --color-text-primary: #3b4445;      /* Carbón suave para texto principal */
   --color-text-secondary: #7F8C8D;    /* Gris medio para descripciones */
   --color-accent: #A8D5BA;            /* Menta suave para elementos secundarios */
   --color-background-alt: #F8F9FA;    /* Gris muy claro para fondos alternativos */
@@ -16,7 +16,7 @@
   --shadow-lg: 0 8px 16px rgba(44, 62, 80, 0.15);
 
   /* Bordes redondeados */
-  --border-radius-sm: 6px;
+  --border-radius-sm: 25px;
   --border-radius-md: 12px;
   --border-radius-lg: 16px;
 

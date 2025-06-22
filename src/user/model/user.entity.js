@@ -25,8 +25,6 @@
   },
 * */
 
-import {AddressEntity} from "@/user/model/address.entity.js";
-import {CompanyEntity} from "@/user/model/company.entity.js";
 
 export class UserEntity {
     constructor(
@@ -34,58 +32,34 @@ export class UserEntity {
         name = '',
         username = '',
         email = '',
-        address = new AddressEntity(),
         phone = '',
-        website = '',
-        company = new CompanyEntity()
     ) {
         this.id = id;
         this.name = name;
         this.username = username;
         this.email = email;
-        this.address = address;
         this.phone = phone;
-        this.website = website;
-        this.company = company;
     }
 
     static fromJson(json) {
-        if (!json) return new UserEntity();
         return new UserEntity(
             json.id,
             json.name,
             json.username,
             json.email,
-            AddressEntity.fromJson(json.address),
-            json.phone,
-            json.website,
-            CompanyEntity.fromJson(json.company)
+            json.phone
         );
     }
-
+    static fromJsonArray(jsonArray) {
+        return jsonArray.map(json => UserEntity.fromJson(json));
+    }
     toJson() {
         return {
             id: this.id,
             name: this.name,
             username: this.username,
             email: this.email,
-            address: {
-                street: this.address.street,
-                suite: this.address.suite,
-                city: this.address.city,
-                zipcode: this.address.zipcode,
-                geo: {
-                    lat: this.address.geo.lat,
-                    lng: this.address.geo.lng
-                }
-            },
-            phone: this.phone,
-            website: this.website,
-            company: {
-                name: this.company.name,
-                catchPhrase: this.company.catchPhrase,
-                bs: this.company.bs
-            }
+            phone: this.phone
         };
     }
 }

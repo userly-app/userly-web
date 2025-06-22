@@ -17,6 +17,7 @@
         </div>
       </div>
 
+      <!--Simulation of methods-->
       <div class="card dashboard-card">
         <div class="card-icon">
           <i class="pi pi-chart-bar"></i>
@@ -24,7 +25,7 @@
         <div class="card-content">
           <h3>Estadísticas</h3>
           <p>Visualiza estadísticas y reportes de actividad</p>
-          <pv-button label="Ver Estadísticas" class="p-button-outlined mt-3"/>
+          <pv-button label="Ver Estadísticas" class="p-button-primary mt-3"/>
         </div>
       </div>
 
@@ -35,7 +36,7 @@
         <div class="card-content">
           <h3>Configuración</h3>
           <p>Personaliza las preferencias del sistema</p>
-          <pv-button label="Configurar" class="p-button-outlined mt-3"/>
+          <pv-button label="Configurar" class="p-button-primary mt-3"/>
         </div>
       </div>
     </div>

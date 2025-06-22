@@ -40,7 +40,7 @@
         </thead>
         <tbody>
         <tr v-for="user in filteredUsers" :key="user.id">
-          <td>
+          <td data-label="Usuario">
             <div class="user-info">
               <div class="user-avatar">{{ getInitials(user.name) }}</div>
               <div class="user-details">
@@ -49,9 +49,9 @@
               </div>
             </div>
           </td>
-          <td>{{ user.email }}</td>
-          <td>{{ user.phone }}</td>
-          <td>
+          <td data-label="Email">{{ user.email }}</td>
+          <td data-label="Teléfono">{{ user.phone }}</td>
+          <td data-label="Acciones">
             <div class="action-buttons">
               <pv-button
                   icon="pi pi-pencil"
@@ -124,16 +124,13 @@ onMounted(getUsers)
 
 const filteredUsers = computed(() =>
     users.value.filter(user =>
-        user.name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-        user.username.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-        user.email.toLowerCase().includes(searchQuery.value.toLowerCase())
+        user.name.toLowerCase().includes(searchQuery.value.toLowerCase())
     )
 )
 const restoreDeletedUsers = async () => {
   try {
-    localStorage.removeItem('deletedUserIds');
-    userService.deletedUserIds = [];
-    await getUsers();
+    // Usar el método del servicio en lugar de implementar la lógica aquí
+    users.value = await userService.restoreDeletedUsers();
 
     toast.add({
       severity: 'success',
@@ -150,6 +147,7 @@ const restoreDeletedUsers = async () => {
     });
   }
 }
+
 const getInitials = name => name.split(' ').map(n => n[0]).join('').slice(0, 2)
 
 const addUser = async (userData) => {
@@ -180,15 +178,11 @@ const editUser = user => {
   selectedUser.value = { ...user }
   showEditDialog.value = true
 }
-
 const updateUser = async (updated) => {
   try {
     loading.value = true
 
-    // Obtener el usuario completo actual para preservar datos como address y geo
-    const currentUser = await userService.getUserById(updated.id)
-
-    // Crear una nueva instancia combinando los datos actuales con los actualizados
+    // Crear una nueva instancia con los datos actualizados
     const mergedUser = new UserEntity(
         updated.id,
         updated.name,
@@ -199,11 +193,8 @@ const updateUser = async (updated) => {
 
     await userService.updateUser(mergedUser)
 
-    // Actualizar la lista local
-    const index = users.value.findIndex(u => u.id === updated.id)
-    if (index !== -1) {
-      users.value[index] = { ...mergedUser }
-    }
+    // Actualizar la lista local usando map para crear un nuevo array
+    users.value = users.value.map(u => u.id === updated.id ? mergedUser : u)
 
     showEditDialog.value = false
     toast.add({
@@ -323,7 +314,7 @@ const deleteUser = async (id) => {
   justify-content: space-between;
   align-items: center;
   padding: 1.5rem 2rem;
-  background-color: var(--color-background);
+  background-color: #e47d22;
   border: none;
 }
 
@@ -336,11 +327,11 @@ const deleteUser = async (id) => {
   margin: 0;
   font-size: 1.25rem;
   font-weight: 600;
-  color: var(--color-text-primary);
+  color: #5a3109;
 }
 
 .table-count {
-  color: var(--color-text-secondary);
+  color: #5a3109;
   font-size: 0.875rem;
   margin-top: 0.25rem;
 }
@@ -354,7 +345,7 @@ const deleteUser = async (id) => {
 .search-icon {
   position: absolute;
   left: 16px;
-  color: var(--color-text-secondary);
+  color: #5a3109;
   z-index: 1;
 }
 
@@ -366,8 +357,8 @@ const deleteUser = async (id) => {
   width: 300px;
   font-size: 0.9rem;
   background-color: transparent;
-  color: var(--color-text-primary);
-  transition: var(--transition-normal);
+  color: #5a3109;
+ transition: var(--transition-normal);
 }
 
 .search-input:focus {
@@ -381,7 +372,7 @@ const deleteUser = async (id) => {
 }
 
 .search-input::placeholder {
-  color: var(--color-text-secondary);
+  color: #5a3109;
 }
 
 .data-table {
@@ -523,29 +514,71 @@ const deleteUser = async (id) => {
     padding: 1rem 1.5rem;
   }
 }
+/* Mejora de responsividad para la tabla */
+@media (max-width: 640px) {
+  .data-table {
+    display: block;
+  }
 
-@media (max-width: 576px) {
-  .data-table th {
-    padding: 0.75rem 1rem;
-    font-size: 0.8rem;
+  .data-table thead {
+    display: none; /* Ocultar cabeceras en móvil */
+  }
+
+  .data-table tbody {
+    display: block;
+  }
+
+  .data-table tr {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1rem;
+    border-radius: var(--border-radius-md);
+    padding: 1rem;
+    box-shadow: var(--shadow-sm);
+    background-color: var(--color-card) !important;
   }
 
   .data-table td {
-    padding: 0.75rem 1rem;
+    display: flex;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--color-accent);
+    position: relative;
+    text-align: left;
+  }
+
+  .data-table td:last-child {
+    border-bottom: none;
+  }
+
+  /* Mostrar etiquetas para los datos */
+  .data-table td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    width: 40%;
+    color: var(--color-text-secondary);
+  }
+
+  .data-table td:first-child {
+    border-bottom: 1px solid var(--color-accent);
+  }
+
+  .action-buttons {
+    margin-top: 0.5rem;
+    justify-content: flex-end;
+    width: 100%;
+  }
+}
+
+/* Ajustes adicionales para pantallas muy pequeñas */
+@media (max-width: 400px) {
+  .user-info {
+    flex-direction: column;
+    align-items: flex-start;
   }
 
   .user-avatar {
-    width: 35px;
-    height: 35px;
-    font-size: 0.8rem;
-  }
-
-  .user-details h4 {
-    font-size: 0.9rem;
-  }
-
-  .user-details p {
-    font-size: 0.8rem;
+    margin-bottom: 0.5rem;
+    margin-right: 0;
   }
 }
 </style>

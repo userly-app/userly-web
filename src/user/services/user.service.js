@@ -1,128 +1,226 @@
 import http from "@/shared/services/http-common.js";
 import { UserEntity } from "@/user/model/user.entity.js";
 
+
+class LocalStorageService {
+    static getItem(key, defaultValue = []) {
+        return JSON.parse(localStorage.getItem(key) || JSON.stringify(defaultValue));
+    }
+
+    static setItem(key, value) {
+        localStorage.setItem(key, JSON.stringify(value));
+    }
+
+    static removeItem(key) {
+        localStorage.removeItem(key);
+    }
+}
+
 export class UserService {
     constructor() {
         this.users = [];
         this.loading = false;
-        // Recuperar IDs eliminados de localStorage
-        this.deletedUserIds = JSON.parse(localStorage.getItem('deletedUserIds') || '[]');
+
+        this.STORAGE_KEYS = {
+            DELETED_USERS: 'deletedUserIds',
+            ADDED_USERS: 'addedUsers',
+            UPDATED_USERS: 'updatedUsers',
+            LAST_USER_ID: 'lastUserId'
+        };
+
+        this.deletedUserIds = LocalStorageService.getItem(this.STORAGE_KEYS.DELETED_USERS);
+        this.addedUsers = LocalStorageService.getItem(this.STORAGE_KEYS.ADDED_USERS);
+        this.updatedUsers = LocalStorageService.getItem(this.STORAGE_KEYS.UPDATED_USERS);
+        this.lastId = parseInt(localStorage.getItem(this.STORAGE_KEYS.LAST_USER_ID) || '10');
     }
 
-    // Obtener todos los usuarios
+    /**
+     * The private method to save data to localStorage.
+     */
+    _saveToLocalStorage(key, data) {
+        LocalStorageService.setItem(key, data);
+    }
+
+    _isLocalUser(userId) {
+        return userId > 10;
+    }
+
+    _applyLocalUpdates(apiUsers) {
+        let filteredUsers = apiUsers.filter(user => !this.deletedUserIds.includes(user.id));
+
+        filteredUsers = filteredUsers.map(user => {
+            const updatedUser = this.updatedUsers.find(u => u.id === user.id);
+            return updatedUser ? UserEntity.fromJson(updatedUser) : user;
+        });
+
+        const addedUsersEntities = this.addedUsers.map(user => UserEntity.fromJson(user));
+        return [...filteredUsers, ...addedUsersEntities];
+    }
+
     async getAllUsers() {
         try {
             this.loading = true;
             const response = await http.get('/');
-            // Filtrar los usuarios eliminados
-            const allUsers = response.data.map(user => UserEntity.fromJson(user));
-            this.users = allUsers.filter(user => !this.deletedUserIds.includes(user.id));
-            this.loading = false;
+
+            /*
+            *  Here we convert the API response to UserEntity instances.
+            * */
+            const apiUsers = response.data.map(user => UserEntity.fromJson(user));
+
+            this.users = this._applyLocalUpdates(apiUsers);
+
             return this.users;
         } catch (error) {
-            this.loading = false;
             console.error('Error al obtener usuarios:', error);
-            throw error;
+            throw new Error(`No se pudieron cargar los usuarios: ${error.message}`);
+        } finally {
+            this.loading = false;
         }
     }
 
-    // Obtener un usuario por ID
-    async getUserById(id) {
-        try {
-            this.loading = true;
-
-            // Verificar si está en caché local primero
-            const cachedUser = this.users.find(user => user.id === id);
-            if (cachedUser) {
-                this.loading = false;
-                return cachedUser;
-            }
-
-            // Si no está en caché, obtener de la API
-            const response = await http.get(`/${id}`);
-            const user = UserEntity.fromJson(response.data);
-            this.loading = false;
-            return user;
-        } catch (error) {
-            this.loading = false;
-            console.error(`Error al obtener usuario con ID ${id}:`, error);
-            throw error;
-        }
-    }
-
-    // Crear un nuevo usuario
     async createUser(userData) {
+        if (!userData || !userData.name || !userData.email) {
+            throw new Error('Datos de usuario incompletos');
+        }
+
         try {
             this.loading = true;
-            // Enviar a la API (solo simulado en JSONPlaceholder)
-            const response = await http.post('/', userData.toJson());
 
-            // Crear entidad desde respuesta
-            const newUser = UserEntity.fromJson(response.data);
+            await http.post('/', userData.toJson());
 
-            // Almacenar localmente
+            this.lastId++;
+            localStorage.setItem(this.STORAGE_KEYS.LAST_USER_ID, this.lastId.toString());
+
+            const newUser = new UserEntity(
+                this.lastId,
+                userData.name,
+                userData.username,
+                userData.email,
+                userData.phone
+            );
+
+            this.addedUsers.push(newUser.toJson());
+            this._saveToLocalStorage(this.STORAGE_KEYS.ADDED_USERS, this.addedUsers);
+
+            /**
+             * Here we add the new user to the in-memory users array.
+             * */
             this.users.push(newUser);
-            this.loading = false;
+
             return newUser;
         } catch (error) {
-            this.loading = false;
             console.error('Error al crear usuario:', error);
-            throw error;
+            throw new Error(`No se pudo crear el usuario: ${error.message}`);
+        } finally {
+            this.loading = false;
         }
     }
 
-    // Actualizar un usuario existente
     async updateUser(userData) {
+        if (!userData || !userData.id) {
+            throw new Error('ID de usuario requerido para actualizar');
+        }
+
         try {
             this.loading = true;
-            // Enviar a la API (solo simulado en JSONPlaceholder)
-            const response = await http.put(`/${userData.id}`, userData.toJson());
+            const isLocalUser = this._isLocalUser(userData.id);
 
-            // Actualizar en el almacenamiento local
-            const updatedUser = UserEntity.fromJson(response.data);
-            const index = this.users.findIndex(user => user.id === updatedUser.id);
-
-            if (index !== -1) {
-                this.users[index] = updatedUser;
+            /**
+             * In this section, we check if the user is local or from the API.
+             * */
+            if (!isLocalUser) {
+                await http.put(`/${userData.id}`, userData.toJson());
             }
 
-            this.loading = false;
-            return updatedUser;
+            if (isLocalUser) {
+                this._updateLocalUser(userData);
+            } else {
+                this._updateApiUser(userData);
+            }
+
+            const index = this.users.findIndex(user => user.id === userData.id);
+            if (index !== -1) {
+                this.users[index] = userData;
+            }
+
+            return userData;
         } catch (error) {
-            this.loading = false;
             console.error(`Error al actualizar usuario con ID ${userData.id}:`, error);
-            throw error;
+            throw new Error(`No se pudo actualizar el usuario: ${error.message}`);
+        } finally {
+            this.loading = false;
         }
+    }
+
+    _updateLocalUser(userData) {
+        const index = this.addedUsers.findIndex(u => u.id === userData.id);
+        if (index !== -1) {
+            this.addedUsers[index] = userData.toJson();
+            this._saveToLocalStorage(this.STORAGE_KEYS.ADDED_USERS, this.addedUsers);
+        }
+    }
+
+    _updateApiUser(userData) {
+        const index = this.updatedUsers.findIndex(u => u.id === userData.id);
+        if (index !== -1) {
+            this.updatedUsers[index] = userData.toJson();
+        } else {
+            this.updatedUsers.push(userData.toJson());
+        }
+        this._saveToLocalStorage(this.STORAGE_KEYS.UPDATED_USERS, this.updatedUsers);
     }
 
     async deleteUser(id) {
+        if (!id) {
+            throw new Error('ID de usuario requerido para eliminar');
+        }
+
         try {
             this.loading = true;
+
             await http.delete(`/${id}`);
 
-            // Persistir ID eliminado en localStorage
-            if (!this.deletedUserIds.includes(id)) {
-                this.deletedUserIds.push(id);
-                localStorage.setItem('deletedUserIds', JSON.stringify(this.deletedUserIds));
+            /**
+             * We check if the user is local or from the API.
+             * */
+            if (this._isLocalUser(id)) {
+                const index = this.addedUsers.findIndex(u => u.id === id);
+                if (index !== -1) {
+                    this.addedUsers.splice(index, 1);
+                    this._saveToLocalStorage(this.STORAGE_KEYS.ADDED_USERS, this.addedUsers);
+                }
+            } else {
+                if (!this.deletedUserIds.includes(id)) {
+                    this.deletedUserIds.push(id);
+                    this._saveToLocalStorage(this.STORAGE_KEYS.DELETED_USERS, this.deletedUserIds);
+                }
+
+                const updatedIndex = this.updatedUsers.findIndex(u => u.id === id);
+                if (updatedIndex !== -1) {
+                    this.updatedUsers.splice(updatedIndex, 1);
+                    this._saveToLocalStorage(this.STORAGE_KEYS.UPDATED_USERS, this.updatedUsers);
+                }
             }
 
             this.users = this.users.filter(user => user.id !== id);
-            this.loading = false;
+
             return true;
         } catch (error) {
-            this.loading = false;
             console.error(`Error al eliminar usuario con ID ${id}:`, error);
-            throw error;
+        } finally {
+            this.loading = false;
         }
     }
 
-    // Verificar si hay usuarios cargados
-    hasUsers() {
-        return this.users.length > 0;
-    }
-
-    // Obtener estado de carga
-    isLoading() {
-        return this.loading;
+    async restoreDeletedUsers() {
+        try {
+            LocalStorageService.removeItem(this.STORAGE_KEYS.DELETED_USERS);
+            LocalStorageService.removeItem(this.STORAGE_KEYS.UPDATED_USERS);
+            this.deletedUserIds = [];
+            this.updatedUsers = [];
+            return await this.getAllUsers();
+        } catch (error) {
+            console.error('Error al restaurar usuarios:', error);
+        }
     }
 }
