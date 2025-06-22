@@ -1,0 +1,308 @@
+/* Sobrescribir estilos de PrimeVue para la paleta minimalista */
+
+/* Toast messages */
+.p-toast .p-toast-message.p-toast-message-success {
+  background-color: var(--color-accent);
+  color: var(--color-text-primary);
+  padding: 12px 16px;
+  border-radius: var(--border-radius-md);
+  border: none;
+  box-shadow: var(--shadow-md);
+  transition: var(--transition-normal);
+}
+
+.p-toast .p-toast-message.p-toast-message-error {
+  background-color: #FFEBEE;
+  color: var(--color-danger);
+  padding: 12px 16px;
+  border-radius: var(--border-radius-md);
+  border: none;
+  box-shadow: var(--shadow-md);
+  transition: var(--transition-normal);
+}
+
+/* Cards sin bordes */
+.p-card {
+  background-color: var(--color-card);
+  border: none;
+  border-radius: var(--border-radius-md);
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition-normal);
+}
+
+.p-card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+/* Overlay transparente para diálogos */
+.p-component-overlay {
+  background-color: rgba(44, 62, 80, 0.6) !important;
+  transition: var(--transition-normal);
+}
+
+/* Diálogos sin bordes */
+.p-dialog {
+  box-shadow: var(--shadow-lg) !important;
+  border-radius: var(--border-radius-lg) !important;
+  border: none !important;
+  overflow: hidden;
+}
+
+/* Contenedor del diálogo */
+.p-dialog .p-dialog-content {
+  background-color: var(--color-card) !important;
+  padding: 2rem !important;
+  border: none !important;
+  border-radius: 0 !important;
+}
+
+/* Cabecera del diálogo */
+.p-dialog .p-dialog-header {
+  background-color: var(--color-background) !important;
+  padding: 1.5rem 2rem 1rem 2rem !important;
+  border: none !important;
+  border-radius: 0 !important;
+}
+
+.p-dialog .p-dialog-header .p-dialog-title {
+  color: var(--color-text-primary);
+  font-weight: 600;
+}
+
+/* Botón de cerrar diálogo */
+.p-dialog .p-dialog-header .p-dialog-header-icon {
+  color: var(--color-primary);
+  background: transparent;
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  transition: var(--transition-normal);
+}
+
+.p-dialog .p-dialog-header .p-dialog-header-icon:hover {
+  background-color: var(--color-primary);
+  color: white;
+  transform: scale(1.1);
+}
+
+/* Botones principales - Coral */
+.p-button.p-button-success,
+.p-button.p-button-primary {
+  background-color: var(--color-primary) !important;
+  border: none !important;
+  color: white !important;
+  padding: 12px 20px !important;
+  border-radius: var(--border-radius-md) !important;
+  font-weight: 500 !important;
+  transition: var(--transition-normal) !important;
+  box-shadow: var(--shadow-sm) !important;
+}
+
+.p-button.p-button-success:hover,
+.p-button.p-button-primary:hover {
+  background-color: #D35400 !important;
+  transform: translateY(-1px) !important;
+  box-shadow: var(--shadow-md) !important;
+}
+
+.p-button.p-button-success:active,
+.p-button.p-button-primary:active {
+  background-color: #E67E22 !important;
+  transform: translateY(0) !important;
+  box-shadow: var(--shadow-sm) !important;
+}
+
+.p-button.p-button-success:focus,
+.p-button.p-button-primary:focus {
+  box-shadow: 0 0 0 3px rgba(230, 126, 34, 0.2) !important;
+}
+
+/* Botones secundarios - Carbón suave */
+.p-button.p-button-secondary {
+  background-color: var(--color-header) !important;
+  border: none !important;
+  color: white !important;
+  padding: 12px 20px !important;
+  border-radius: var(--border-radius-md) !important;
+  font-weight: 500 !important;
+  transition: var(--transition-normal) !important;
+  box-shadow: var(--shadow-sm) !important;
+}
+
+.p-button.p-button-secondary:hover {
+  background-color: #34495E !important;
+  transform: translateY(-1px) !important;
+  box-shadow: var(--shadow-md) !important;
+}
+
+.p-button.p-button-secondary:active {
+  background-color: #2C3E50 !important;
+  transform: translateY(0) !important;
+  box-shadow: var(--shadow-sm) !important;
+}
+
+.p-button.p-button-secondary:focus {
+  box-shadow: 0 0 0 3px rgba(44, 62, 80, 0.2) !important;
+}
+
+/* Botones de acción - Menta suave */
+.p-button.p-button-info {
+  background-color: var(--color-accent) !important;
+  border: none !important;
+  color: var(--color-text-primary) !important;
+  padding: 12px 20px !important;
+  border-radius: var(--border-radius-md) !important;
+  font-weight: 500 !important;
+  transition: var(--transition-normal) !important;
+  box-shadow: var(--shadow-sm) !important;
+}
+
+.p-button.p-button-info:hover {
+  background-color: #95C9A3 !important;
+  transform: translateY(-1px) !important;
+  box-shadow: var(--shadow-md) !important;
+}
+
+.p-button.p-button-info:active {
+  background-color: #A8D5BA !important;
+  transform: translateY(0) !important;
+  box-shadow: var(--shadow-sm) !important;
+}
+
+.p-button.p-button-info:focus {
+  box-shadow: 0 0 0 3px rgba(168, 213, 186, 0.2) !important;
+}
+
+/* Botón de peligro - Coral intenso */
+.p-button.p-button-danger {
+  background-color: var(--color-danger) !important;
+  border: none !important;
+  color: white !important;
+  padding: 12px 20px !important;
+  border-radius: var(--border-radius-md) !important;
+  font-weight: 500 !important;
+  transition: var(--transition-normal) !important;
+  box-shadow: var(--shadow-sm) !important;
+}
+
+.p-button.p-button-danger:hover {
+  background-color: #C0392B !important;
+  transform: translateY(-1px) !important;
+  box-shadow: var(--shadow-md) !important;
+}
+
+.p-button.p-button-danger:active {
+  background-color: #E74C3C !important;
+  transform: translateY(0) !important;
+  box-shadow: var(--shadow-sm) !important;
+}
+
+.p-button.p-button-danger:focus {
+  box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.2) !important;
+}
+
+/* Inputs sin bordes */
+.p-inputtext,
+.p-password,
+.p-dropdown,
+.p-multiselect {
+  border: none !important;
+  border-bottom: 2px solid var(--color-accent) !important;
+  border-radius: 0 !important;
+  padding: 12px 16px !important;
+  background-color: transparent !important;
+  color: var(--color-text-primary) !important;
+  transition: var(--transition-normal) !important;
+}
+
+.p-inputtext:focus,
+.p-password:focus,
+.p-dropdown:focus,
+.p-multiselect:focus {
+  border-bottom-color: var(--color-primary) !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+.p-inputtext:hover,
+.p-password:hover,
+.p-dropdown:hover,
+.p-multiselect:hover {
+  border-bottom-color: var(--color-primary) !important;
+}
+
+/* Labels */
+.p-inputtext + label,
+.p-password + label {
+  color: var(--color-text-secondary) !important;
+  font-weight: 500 !important;
+}
+
+/* DataTable sin bordes */
+.p-datatable .p-datatable-header {
+  background-color: var(--color-background) !important;
+  border: none !important;
+  border-radius: var(--border-radius-md) var(--border-radius-md) 0 0 !important;
+  padding: 1.5rem !important;
+}
+
+.p-datatable .p-datatable-thead > tr > th {
+  background-color: var(--color-background-alt) !important;
+  border: none !important;
+  color: var(--color-text-primary) !important;
+  font-weight: 600 !important;
+  padding: 1rem !important;
+}
+
+.p-datatable .p-datatable-tbody > tr {
+  background-color: var(--color-card) !important;
+  border: none !important;
+  transition: var(--transition-normal) !important;
+}
+
+.p-datatable .p-datatable-tbody > tr:hover {
+  background-color: var(--color-background) !important;
+  transform: scale(1.01) !important;
+}
+
+.p-datatable .p-datatable-tbody > tr > td {
+  border: none !important;
+  padding: 1rem !important;
+  color: var(--color-text-primary) !important;
+}
+
+/* Paginación */
+.p-paginator {
+  background-color: var(--color-background) !important;
+  border: none !important;
+  border-radius: 0 0 var(--border-radius-md) var(--border-radius-md) !important;
+  padding: 1rem 1.5rem !important;
+}
+
+.p-paginator .p-paginator-pages .p-paginator-page {
+  background-color: transparent !important;
+  border: none !important;
+  color: var(--color-text-secondary) !important;
+  transition: var(--transition-normal) !important;
+}
+
+.p-paginator .p-paginator-pages .p-paginator-page:hover {
+  background-color: var(--color-accent) !important;
+  color: var(--color-text-primary) !important;
+}
+
+.p-paginator .p-paginator-pages .p-paginator-page.p-highlight {
+  background-color: var(--color-primary) !important;
+  color: white !important;
+}
+
+/* Tooltips */
+.p-tooltip .p-tooltip-text {
+  background-color: var(--color-header) !important;
+  color: white !important;
+  border-radius: var(--border-radius-sm) !important;
+  box-shadow: var(--shadow-md) !important;
+  border: none !important;
+}
