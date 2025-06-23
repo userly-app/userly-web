@@ -332,9 +332,6 @@ const handleSubmit = async () => {
   display: flex;
   justify-content: flex-end;
   gap: 1rem;
-  margin-top: 2rem;
-  padding-top: 1.5rem;
-  border-top: 1px solid var(--color-accent);
 }
 
 .modal-footer .p-button {

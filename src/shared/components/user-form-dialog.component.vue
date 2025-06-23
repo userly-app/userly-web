@@ -280,7 +280,6 @@ defineExpose({
 :deep(.modal-footer) {
   margin-top: 1.5rem;
   padding-top: 1.5rem;
-  border-top: 1px solid var(--color-accent);
 }
 
 :deep(.modal-footer .p-button) {
