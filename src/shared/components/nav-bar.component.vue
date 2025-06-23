@@ -86,11 +86,11 @@ const toggleSidebar = () => {
 
 <style scoped>
 .navbar-container {
+  background-color: #FFFFFF;
   position: sticky;
   top: 0;
   z-index: 1000;
   box-shadow: var(--shadow-sm);
-  background-color: var(--color-card);
 }
 
 .custom-toolbar {
@@ -134,6 +134,7 @@ const toggleSidebar = () => {
 }
 
 .desktop-menu {
+  background-color: #FFFFFF;
   display: flex;
   gap: 0.5rem;
 }
@@ -176,14 +177,14 @@ const toggleSidebar = () => {
   width: 280px !important;
   display: flex;
   flex-direction: column;
-  background-color: var(--color-card) !important;
+  background-color: #FFFFFF;
   border: none !important;
   box-shadow: var(--shadow-lg) !important;
 }
 
 .sidebar-header {
-  padding: 1.5rem;
   background-color: #FFFFFF;
+  padding: 1.5rem;
   border: none !important;
 }
 
@@ -194,6 +195,8 @@ const toggleSidebar = () => {
 }
 
 .sidebar-user-info {
+  background-color: #FFFFFF;
+
   display: flex;
   align-items: center;
   padding: 0rem 1.5rem ;
@@ -206,7 +209,7 @@ const toggleSidebar = () => {
 .sidebar-content {
   flex: 1;
   padding: 1.5rem;
-  background-color: var(--color-card);
+  background-color: #FFFFFF;
 }
 
 .users-group-title {
@@ -247,6 +250,7 @@ const toggleSidebar = () => {
 }
 
 .sidebar-footer {
+  background-color: #FFFFFF;
   padding: 1.5rem;
   border: none !important;
 }

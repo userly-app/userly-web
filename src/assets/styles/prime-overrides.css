@@ -1,6 +1,5 @@
-/* Sobrescribir estilos de PrimeVue para la paleta minimalista */
+@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&display=swap');
 
-/* Toast messages */
 .p-toast .p-toast-message.p-toast-message-success {
   background-color: var(--color-accent);
   color: var(--color-text-primary);
@@ -305,4 +304,94 @@
   border-radius: var(--border-radius-sm) !important;
   box-shadow: var(--shadow-md) !important;
   border: none !important;
+}
+
+/* ========== DIÁLOGO DE CONFIRMACIÓN ========== */
+.p-confirm-dialog .p-dialog-content {
+  padding: 2rem !important;
+  border-bottom: 1px solid #f0f0f0 !important;
+}
+
+.p-confirm-dialog .p-dialog-header {
+  padding: 1.5rem 2rem !important;
+  background-color: var(--color-background-alt) !important;
+  border-bottom: 1px solid #f0f0f0 !important;
+  border-top-left-radius: var(--border-radius-md) !important;
+  border-top-right-radius: var(--border-radius-md) !important;
+}
+
+.p-confirm-dialog .p-dialog-title {
+  font-weight: 700 !important;
+  font-size: 1.25rem !important;
+  color: var(--color-text-primary) !important;
+}
+
+.p-confirm-dialog .p-dialog-header-icon {
+  color: var(--color-text-secondary) !important;
+  border-radius: 50% !important;
+  transition: var(--transition-normal) !important;
+}
+
+.p-confirm-dialog .p-dialog-header-icon:hover {
+  background-color: rgba(0, 0, 0, 0.04) !important;
+  color: var(--color-text-primary) !important;
+}
+
+.p-confirm-dialog .p-dialog-footer {
+  padding: 1.5rem 2rem !important;
+  border-top: 1px solid #f0f0f0 !important;
+  text-align: right !important;
+  display: flex !important;
+  justify-content: flex-end !important;
+  gap: 1rem !important;
+}
+
+/* Botón de cancelación (No) */
+.p-confirm-dialog .p-dialog-footer button:first-child {
+  background-color: var(--color-secondary) !important;
+  border: none !important;
+  color: white !important;
+  font-weight: 600 !important;
+  padding: 0.75rem 1.5rem !important;
+  border-radius: var(--border-radius-md) !important;
+  transition: var(--transition-normal) !important;
+  box-shadow: var(--shadow-sm) !important;
+}
+
+.p-confirm-dialog .p-dialog-footer button:first-child:hover {
+  background-color: var(--color-secondary-dark) !important;
+  transform: translateY(-3px) !important;
+  box-shadow: var(--shadow-md) !important;
+}
+
+/* Botón de confirmación (Sí) */
+.p-confirm-dialog .p-dialog-footer button:last-child {
+  background-color: var(--color-danger) !important;
+  border: none !important;
+  color: white !important;
+  font-weight: 600 !important;
+  padding: 0.75rem 1.5rem !important;
+  border-radius: var(--border-radius-md) !important;
+  transition: var(--transition-normal) !important;
+  box-shadow: var(--shadow-sm) !important;
+}
+
+.p-confirm-dialog .p-dialog-footer button:last-child:hover {
+  background-color: var(--color-danger-dark) !important;
+  transform: translateY(-3px) !important;
+  box-shadow: var(--shadow-md) !important;
+}
+
+/* Icono de confirmación */
+.p-confirm-dialog .p-confirm-dialog-icon {
+  color: var(--color-danger) !important;
+  font-size: 2rem !important;
+  margin-right: 1rem !important;
+}
+
+/* Mensaje de confirmación */
+.p-confirm-dialog .p-confirm-dialog-message {
+  font-size: 1.1rem !important;
+  color: var(--color-text-primary) !important;
+  line-height: 1.5 !important;
 }

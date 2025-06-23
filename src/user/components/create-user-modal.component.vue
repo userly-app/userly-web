@@ -85,10 +85,7 @@ const handleSubmit = async () => {
   <form @submit.prevent="handleSubmit" class="user-form">
     <div class="form-grid">
       <div class="form-group">
-        <div class="label-with-icon">
-          <i class="pi pi-user label-icon"></i>
-          <label class="form-label" for="name">Nombre</label>
-        </div>
+        <label class="form-label" for="name">Nombre</label>
         <span class="p-input-icon-left w-full">
           <i class="pi pi-user"></i>
           <input
@@ -104,10 +101,7 @@ const handleSubmit = async () => {
       </div>
 
       <div class="form-group">
-        <div class="label-with-icon">
-          <i class="pi pi-id-card label-icon"></i>
-          <label class="form-label" for="username">Usuario</label>
-        </div>
+        <label class="form-label" for="username">Usuario</label>
         <span class="p-input-icon-left w-full">
           <i class="pi pi-id-card"></i>
           <input
@@ -123,10 +117,7 @@ const handleSubmit = async () => {
       </div>
 
       <div class="form-group full-width">
-        <div class="label-with-icon">
-          <i class="pi pi-envelope label-icon"></i>
-          <label class="form-label" for="email">Email</label>
-        </div>
+        <label class="form-label" for="email">Email</label>
         <span class="p-input-icon-left w-full">
           <i class="pi pi-envelope"></i>
           <input
@@ -142,10 +133,7 @@ const handleSubmit = async () => {
       </div>
 
       <div class="form-group full-width">
-        <div class="label-with-icon">
-          <i class="pi pi-phone label-icon"></i>
-          <label class="form-label" for="phone">Teléfono</label>
-        </div>
+        <label class="form-label" for="phone">Teléfono</label>
         <span class="p-input-icon-left w-full">
           <i class="pi pi-phone"></i>
           <input
@@ -208,8 +196,55 @@ const handleSubmit = async () => {
 }
 
 .form-group {
+  margin-bottom: 1.5rem;
+}
+
+.input-field {
+  width: 100%;
+  padding: 0.85rem 1rem;
+  border: 1px solid #e0e0e0;
+  font-size: 1rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.input-field:focus {
+  border-color: #e67e22;
+  box-shadow: 0 0 0 3px rgba(230, 126, 34, 0.25);
+  outline: none;
+}
+
+.label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.form-buttons {
   display: flex;
-  flex-direction: column;
+  gap: 1rem;
+  justify-content: flex-end;
+  margin-top: 2rem;
+}
+
+.form-buttons button {
+  position: relative;
+  overflow: hidden;
+}
+
+.form-buttons button::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: all 0.5s ease;
+}
+
+.form-buttons button:hover::before {
+  left: 100%;
 }
 
 .form-group.full-width {

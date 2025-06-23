@@ -1,70 +1,99 @@
 @import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&display=swap');
 
 :root {
-  --primaryColor50: rgba(239, 225, 208, 0.58);
-  --primaryColor100: #a3927f;
-  --primaryColor200: #dcc4a9;
-  --primaryColor300: #cdaa84;
-  --primaryColor400: #d6ae7b;
-  --primaryColor500: #AC8362;
-  --primaryColor600: #9d775a;
-  --primaryColor700: #7b5d46;
-  --primaryColor800: #5f4936;
-  --primaryColor900: #493829;
+  /* Paleta de colores pastel femenina */
+  --color-primary: #f8642d;         /* Coral - acentos principales */
+  --color-primary-light: #F39C12;
+  --color-primary-dark: #D35400;
 
-  /* Color de texto */
-  --text-primary: #604527;
-  --text-secondary: #757575;
-  --text-color: #333333;
-  --text-disabled: #9e9e9e;
+  --color-secondary: #3498DB;       /* Azul suave */
+  --color-secondary-dark: #2980B9;
 
-  /* Color de fondo */
-  --background-color: #ffffff;
-  --background-color-light: #f5f5f5;
-  --surface-color: #ffffff;
+  --color-success: #2ECC71;         /* Verde pantano */
+  --color-success-dark: #27AE60;
 
+  --color-danger: #E74C3C;          /* Rojo vino */
+  --color-danger-dark: #C0392B;
 
-  font-family: 'Nunito Sans', system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+  --color-accent: #A8D5BA;          /* Menta suave */
 
-  color-scheme: light only;
+  /* Colores de fondo */
+  --color-background: #ECEAEA;      /* Arena suave */
+  --color-background-alt: #F8F9FA;  /* Gris muy claro */
+  --color-card: #FFFFFF;            /* Blanco puro */
+  --color-header: #2C3E50;          /* Carbón suave */
 
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  /* Texto */
+  --color-text-primary: #3B4445;    /* Texto principal */
+  --color-text-secondary: #7F8C8D;  /* Texto secundario */
 
-  --p-drawer-background: var(--background-color) !important;
-  --p-drawer-content-background: var(--background-color) !important;
-  --p-sidebar-background: var(--background-color) !important;
-  --p-button-text-primary-active-background: rgba(172, 131, 98, 0.2) !important;
+  /* Gradientes */
+  --gradient-primary: linear-gradient(135deg, #E67E22, #D35400);
+  --gradient-secondary: linear-gradient(135deg, #3498DB, #2980B9);
+  --gradient-success: linear-gradient(135deg, #2ECC71, #27AE60);
+  --gradient-danger: linear-gradient(135deg, #E74C3C, #C0392B);
 
+  /* Sombras minimalistas */
+  --shadow-sm: 0 2px 4px rgba(44, 62, 80, 0.08);
+  --shadow-md: 0 4px 8px rgba(44, 62, 80, 0.12);
+  --shadow-lg: 0 8px 16px rgba(44, 62, 80, 0.15);
+
+  /* Bordes redondeados */
+  --border-radius-sm: 8px;
+  --border-radius-md: 12px;
+  --border-radius-lg: 16px;
+  --border-radius-pill: 50px;
+
+  /* Transiciones */
+  --transition-fast: 0.2s ease-in-out;
+  --transition-normal: 0.3s ease-in-out;
+  --transition-slow: 0.5s ease-in-out;
+
+  /* Fuente */
+  --font-family: 'Nunito Sans', sans-serif;
 }
 
-* {
-  transition: background-color 0.3s, color 0.3s;
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 body {
-  margin: 0;
+  font-family: var(--font-family);
+  color: var(--color-text-primary);
+  background-color: var(--color-background);
+  line-height: 1.6;
   min-height: 100vh;
-  background-color: var(--background-color);
+  transition: all var(--transition-normal);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-.p-drawer {
-  background-color: var(--background-color) !important;
+h1, h2, h3, h4, h5, h6 {
+  color: var(--color-header);
+  font-weight: 700;
+  line-height: 1.2;
 }
 
-.p-drawer-content {
-  background-color: var(--background-color) !important;
+a {
+  color: var(--color-primary);
+  text-decoration: none;
+  transition: var(--transition-normal);
 }
 
-.p-sidebar {
-  background-color: var(--background-color) !important;
+/* Scrollbar personalizada */
+::-webkit-scrollbar {
+  width: 8px;
 }
 
-#app {
-  background-color: var(--background-color);
-  color: var(--text-primary);
+::-webkit-scrollbar-track {
+  background: var(--color-background);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-primary);
+  border-radius: 4px;
 }

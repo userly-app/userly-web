@@ -1,5 +1,5 @@
 import './assets/main.css'
-import './assets/styles/variables.css'
+import './assets/styles/components.css'
 import './assets/styles/prime-overrides.css'
 
 import { createApp } from 'vue'

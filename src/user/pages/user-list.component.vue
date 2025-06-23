@@ -3,10 +3,16 @@
     <div class="page-header">
       <div class="page-title">
         <h2>Gestión de Usuarios</h2>
-        <div class="page-actions">
-          <pv-button class="btn-secondary" icon="pi pi-refresh" label="Restaurar eliminados" @click="restoreDeletedUsers" />
+        <div class="action-panel">
+          <button class="action-btn restore-btn" @click="restoreDeletedUsers">
+            <i class="pi pi-history"></i>
+            <span>Restaurar eliminados</span>
+          </button>
 
-          <pv-button class="btn-primary" icon="pi pi-plus" label="Nuevo Usuario" @click="showAddDialog = true" />
+          <button class="action-btn new-user-btn" @click="showAddDialog = true">
+            <i class="pi pi-user-plus"></i>
+            <span>Nuevo Usuario</span>
+          </button>
         </div>
       </div>
       <p class="page-subtitle">Administra a los usuarios registrados en la plataforma.</p>
@@ -251,6 +257,7 @@ const deleteUser = async (id) => {
 </script>
 
 <style scoped>
+
 .main-container {
   background-color: var(--color-background);
   border-radius: var(--border-radius-md);
@@ -314,7 +321,7 @@ const deleteUser = async (id) => {
   justify-content: space-between;
   align-items: center;
   padding: 1.5rem 2rem;
-  background-color: #e47d22;
+  background-color: #b0b0b0;
   border: none;
 }
 
@@ -327,11 +334,11 @@ const deleteUser = async (id) => {
   margin: 0;
   font-size: 1.25rem;
   font-weight: 600;
-  color: #5a3109;
+  color: #000000;
 }
 
 .table-count {
-  color: #5a3109;
+  color: #000000;
   font-size: 0.875rem;
   margin-top: 0.25rem;
 }
@@ -345,7 +352,7 @@ const deleteUser = async (id) => {
 .search-icon {
   position: absolute;
   left: 16px;
-  color: #5a3109;
+  color: #000000;
   z-index: 1;
 }
 
@@ -357,22 +364,22 @@ const deleteUser = async (id) => {
   width: 300px;
   font-size: 0.9rem;
   background-color: transparent;
-  color: #5a3109;
+  color: #000000;
  transition: var(--transition-normal);
 }
 
 .search-input:focus {
   outline: none;
-  border-bottom-color: var(--color-primary);
+  border-bottom-color: black;
   box-shadow: none;
 }
 
 .search-input:hover {
-  border-bottom-color: var(--color-primary);
+  border-bottom-color: black;
 }
 
 .search-input::placeholder {
-  color: #5a3109;
+  color: var(--color-text-secondary);
 }
 
 .data-table {
@@ -448,7 +455,6 @@ const deleteUser = async (id) => {
 }
 
 .user-details p {
-  margin: 0;
   font-size: 0.85rem;
   color: var(--color-text-secondary);
   margin-top: 0.25rem;
@@ -514,14 +520,14 @@ const deleteUser = async (id) => {
     padding: 1rem 1.5rem;
   }
 }
-/* Mejora de responsividad para la tabla */
+
 @media (max-width: 640px) {
   .data-table {
     display: block;
   }
 
   .data-table thead {
-    display: none; /* Ocultar cabeceras en móvil */
+    display: none;
   }
 
   .data-table tbody {
@@ -550,7 +556,6 @@ const deleteUser = async (id) => {
     border-bottom: none;
   }
 
-  /* Mostrar etiquetas para los datos */
   .data-table td::before {
     content: attr(data-label);
     font-weight: 600;
@@ -569,7 +574,6 @@ const deleteUser = async (id) => {
   }
 }
 
-/* Ajustes adicionales para pantallas muy pequeñas */
 @media (max-width: 400px) {
   .user-info {
     flex-direction: column;
@@ -579,6 +583,77 @@ const deleteUser = async (id) => {
   .user-avatar {
     margin-bottom: 0.5rem;
     margin-right: 0;
+  }
+}
+
+.action-panel {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.action-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.85rem 1.5rem;
+  border: none;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.action-btn::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: all 0.5s ease;
+}
+
+.action-btn:hover::before {
+  left: 100%;
+}
+
+.action-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.action-btn:active {
+  transform: translateY(-1px);
+}
+
+.action-btn i {
+  font-size: 1.1rem;
+}
+
+.restore-btn {
+  background: linear-gradient(135deg, #3498db, #2980b9);
+  color: white;
+}
+
+.new-user-btn {
+  background: linear-gradient(135deg, #e67e22, #d35400);
+  color: white;
+}
+
+@media (max-width: 768px) {
+  .action-panel {
+    width: 100%;
+  }
+
+  .action-btn {
+    flex: 1;
+    justify-content: center;
   }
 }
 </style>
