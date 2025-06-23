@@ -1,6 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&display=swap');
 
 :root {
+  --font-family: 'Nunito Sans', sans-serif;
+
   /* Paleta de colores pastel femenina */
   --color-primary: #f8642d;         /* Coral - acentos principales */
   --color-primary-light: #F39C12;
@@ -49,8 +51,6 @@
   --transition-normal: 0.3s ease-in-out;
   --transition-slow: 0.5s ease-in-out;
 
-  /* Fuente */
-  --font-family: 'Nunito Sans', sans-serif;
 }
 
 *,

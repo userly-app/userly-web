@@ -93,6 +93,7 @@
 </template>
 
 <script setup>
+
 import { ref, computed, onMounted } from 'vue'
 import { useConfirm } from 'primevue/useconfirm'
 import { useToast } from 'primevue/usetoast'
@@ -263,10 +264,12 @@ const deleteUser = async (id) => {
   border-radius: var(--border-radius-md);
   padding: 2rem;
   min-height: 100vh;
+  font-family: 'Nunito Sans', sans-serif !important;
 }
 
 .page-header {
   margin-bottom: 2rem;
+  font-family: 'Nunito Sans', sans-serif !important;
 }
 
 .page-title {
@@ -274,6 +277,7 @@ const deleteUser = async (id) => {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 0.5rem;
+  font-family: 'Nunito Sans', sans-serif !important;
 }
 
 .page-title h2 {
@@ -281,12 +285,14 @@ const deleteUser = async (id) => {
   color: var(--color-text-primary);
   font-size: 1.75rem;
   font-weight: 700;
+  font-family: 'Nunito Sans', sans-serif !important;
 }
 
 .page-subtitle {
   color: var(--color-text-secondary);
   margin: 0;
   font-size: 1rem;
+  font-family: 'Nunito Sans', sans-serif !important;
 }
 
 .data-table-container {
@@ -466,6 +472,7 @@ const deleteUser = async (id) => {
 }
 
 .action-buttons .p-button {
+  font-family: 'Nunito Sans', sans-serif !important;
   border-radius: 50% !important;
   width: 40px !important;
   height: 40px !important;
@@ -590,9 +597,11 @@ const deleteUser = async (id) => {
   display: flex;
   gap: 1rem;
   margin-bottom: 0.5rem;
+  font-family: 'Nunito Sans', sans-serif !important;
 }
 
 .action-btn {
+  font-family: 'Nunito Sans', sans-serif !important;
   display: flex;
   align-items: center;
   gap: 0.75rem;
