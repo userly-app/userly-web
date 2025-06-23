@@ -22,7 +22,6 @@
             :aria-describedby="contentId"
             ref="dialogRef"
           >
-            <!-- Header -->
             <div class="dialog-header" :id="headerId">
               <div class="dialog-title-section">
                 <div class="dialog-icon" v-if="icon">
@@ -39,12 +38,10 @@
               </button>
             </div>
 
-            <!-- Content -->
             <div class="dialog-content" :id="contentId">
               <slot></slot>
             </div>
 
-            <!-- Footer -->
             <div class="dialog-footer" v-if="$slots.footer">
               <slot name="footer"></slot>
             </div>
@@ -98,17 +95,14 @@ const headerId = computed(() => `dialog-header-${Math.random().toString(36).subs
 const contentId = computed(() => `dialog-content-${Math.random().toString(36).substr(2, 9)}`)
 const isMobile = ref(false)
 
-// Detectar dispositivo móvil
 const checkMobile = () => {
   isMobile.value = window.innerWidth <= 768
 }
 
-// Focus trap elements
 let focusableElements = []
 let firstFocusableElement = null
 let lastFocusableElement = null
 
-// Manejar focus trap
 const setupFocusTrap = () => {
   if (!dialogRef.value) return
   

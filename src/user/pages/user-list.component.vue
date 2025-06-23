@@ -110,8 +110,8 @@
 import { ref, computed, onMounted } from 'vue'
 import { useToast } from 'primevue/usetoast'
 import { useUserDialogs } from '../../shared/composables/useDialogs.js'
-import UserFormDialog from '../../shared/components/UserFormDialog.component.vue'
-import ConfirmDialog from '../../shared/components/ConfirmDialog.component.vue'
+import UserFormDialog from '../../shared/components/user-form-dialog.component.vue'
+import ConfirmDialog from '../../shared/components/confirm-dialog.component.vue'
 import { UserService } from '../services/user.service.js'
 import { UserEntity } from '../model/user.entity.js'
 

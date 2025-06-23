@@ -133,9 +133,7 @@ export function useDialogs() {
     showUserFormDialog('edit', user)
   }
 
-  /**
-   * Finalizar loading en diálogo de confirmación
-   */
+
   const finishConfirmLoading = () => {
     if (confirmDialogRef.value) {
       confirmDialogRef.value.finishLoading()
@@ -162,14 +160,11 @@ export function useDialogs() {
   }
 
   return {
-    // Estados reactivos
     dialogs,
 
-    // Referencias
     confirmDialogRef,
     userFormDialogRef,
 
-    // Métodos generales
     showUserFormDialog,
     hideUserFormDialog,
     showConfirmDialog,
@@ -177,12 +172,10 @@ export function useDialogs() {
     confirmAction,
     cancelAction,
 
-    // Métodos específicos
     showDeleteConfirmDialog,
     showCreateUserDialog,
     showEditUserDialog,
 
-    // Métodos de control
     finishConfirmLoading,
     showUserFormSuccess,
     setUserFormLoading
@@ -217,20 +210,16 @@ export function useUserDialogs() {
   }
 
   return {
-    // Estados
     dialogs,
 
-    // Referencias
     confirmDialogRef,
     userFormDialogRef,
 
-    // Métodos de usuario específicos
     showCreateUserDialog,
     showEditUserDialog,
     confirmDeleteUser,
     hideUserFormDialog,
 
-    // Métodos de control
     confirmAction,
     cancelAction,
     finishConfirmLoading,

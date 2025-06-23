@@ -24,7 +24,7 @@
 
 <script setup>
 import { ref, computed, watch } from 'vue'
-import BaseDialog from './BaseDialog.component.vue'
+import BaseDialog from './base-dialog.component.vue'
 import CreateUserModal from '../../user/components/create-user-modal.component.vue'
 
 const props = defineProps({

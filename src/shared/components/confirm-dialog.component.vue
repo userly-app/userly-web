@@ -64,7 +64,7 @@
 
 <script setup>
 import { ref, computed, watch, onMounted } from 'vue'
-import BaseDialog from './BaseDialog.component.vue'
+import BaseDialog from './base-dialog.component.vue'
 
 const props = defineProps({
   modelValue: {
