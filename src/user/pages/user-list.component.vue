@@ -577,58 +577,34 @@ const deleteUser = async (id, userName) => {
   border-radius: 50% !important;
   width: 40px !important;
   height: 40px !important;
-  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
-  position: relative !important;
-  overflow: hidden !important;
-}
-
-.action-buttons .p-button::before {
-  content: "";
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 0;
-  height: 0;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.3);
-  transition: all 0.3s ease;
-  transform: translate(-50%, -50%);
+  transition: all 0.2s ease !important;
+  border: none !important;
 }
 
 .action-buttons .p-button:hover {
-  transform: scale(1.15) translateY(-2px) !important;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15) !important;
-}
-
-.action-buttons .p-button:hover::before {
-  width: 100%;
-  height: 100%;
+  transform: scale(1.1) !important;
 }
 
 .action-buttons .p-button:active {
-  transform: scale(1.05) !important;
+  transform: scale(0.95) !important;
 }
 
-/* Botón de editar - azul elegante */
+/* Botón de editar - azul simple */
 .action-buttons .p-button:not(.p-button-danger) {
-  background: linear-gradient(135deg, #3498db, #2980b9) !important;
-  border: none !important;
+  background-color: #3498db !important;
 }
 
 .action-buttons .p-button:not(.p-button-danger):hover {
-  background: linear-gradient(135deg, #2980b9, #1f5f8b) !important;
-  box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4) !important;
+  background-color: #2980b9 !important;
 }
 
-/* Botón de eliminar - rojo elegante */
+/* Botón de eliminar - rojo simple */
 .action-buttons .p-button.p-button-danger {
-  background: linear-gradient(135deg, #e74c3c, #c0392b) !important;
-  border: none !important;
+  background-color: #e74c3c !important;
 }
 
 .action-buttons .p-button.p-button-danger:hover {
-  background: linear-gradient(135deg, #c0392b, #a93226) !important;
-  box-shadow: 0 6px 20px rgba(231, 76, 60, 0.4) !important;
+  background-color: #c0392b !important;
 }
 
 @media (max-width: 992px) {
