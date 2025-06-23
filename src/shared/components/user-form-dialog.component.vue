@@ -18,7 +18,6 @@
       />
     </div>
 
-
   </BaseDialog>
 </template>
 
@@ -119,7 +118,6 @@ const showSuccessAnimation = () => {
   }, 1500)
 }
 
-// Expose methods for parent components
 defineExpose({
   setLoading,
   showSuccessAnimation
@@ -137,7 +135,6 @@ defineExpose({
   opacity: 0.7;
 }
 
-/* Loading Overlay */
 .loading-overlay {
   position: absolute;
   top: 0;
@@ -190,7 +187,6 @@ defineExpose({
   }
 }
 
-/* Success Overlay */
 .success-overlay {
   position: absolute;
   top: 0;
@@ -253,7 +249,6 @@ defineExpose({
   }
 }
 
-/* Success animation transitions */
 .success-animation-enter-active {
   transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
@@ -272,7 +267,6 @@ defineExpose({
   transform: scale(1.1);
 }
 
-/* Form styling overrides */
 :deep(.user-form) {
   padding: 0;
 }
@@ -314,7 +308,6 @@ defineExpose({
   box-shadow: 0 4px 12px rgba(230, 126, 34, 0.4);
 }
 
-/* Responsive adjustments */
 @media (max-width: 768px) {
   .loading-spinner {
     width: 50px;

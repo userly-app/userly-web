@@ -1,7 +1,6 @@
 import { ref, reactive } from 'vue'
 
 export function useDialogs() {
-  // Estados de los diálogos
   const dialogs = reactive({
     userForm: {
       visible: false,
@@ -14,7 +13,6 @@ export function useDialogs() {
     }
   })
 
-  // Referencias para los componentes de diálogo
   const confirmDialogRef = ref(null)
   const userFormDialogRef = ref(null)
 

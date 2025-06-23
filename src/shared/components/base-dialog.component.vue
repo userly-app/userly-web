@@ -177,7 +177,6 @@ watch(() => props.modelValue, async (isOpen) => {
 </script>
 
 <style scoped>
-/* Transiciones del backdrop */
 .dialog-backdrop-enter-active,
 .dialog-backdrop-leave-active {
   transition: opacity 0.3s ease;
@@ -188,7 +187,6 @@ watch(() => props.modelValue, async (isOpen) => {
   opacity: 0;
 }
 
-/* Transiciones del contenido */
 .dialog-content-enter-active {
   transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
@@ -207,7 +205,6 @@ watch(() => props.modelValue, async (isOpen) => {
   transform: scale(0.95) translateY(-10px);
 }
 
-/* Layout del diálogo */
 .dialog-overlay {
   position: fixed;
   top: 0;
@@ -234,7 +231,6 @@ watch(() => props.modelValue, async (isOpen) => {
   position: relative;
 }
 
-/* Tamaños del diálogo */
 .dialog-small {
   width: 100%;
   max-width: 400px;
@@ -318,14 +314,12 @@ watch(() => props.modelValue, async (isOpen) => {
   transform: scale(0.95);
 }
 
-/* Content */
 .dialog-content {
   flex: 1;
   overflow-y: auto;
   padding: 2rem;
 }
 
-/* Footer */
 .dialog-footer {
   padding: 1.5rem 2rem;
   border-top: 1px solid var(--color-accent);
@@ -335,7 +329,6 @@ watch(() => props.modelValue, async (isOpen) => {
   gap: 1rem;
 }
 
-/* Responsive - Mobile */
 @media (max-width: 768px) {
   .dialog-overlay {
     padding: 0;
@@ -378,7 +371,6 @@ watch(() => props.modelValue, async (isOpen) => {
   }
 }
 
-/* Scrollbar personalizado */
 .dialog-content::-webkit-scrollbar {
   width: 6px;
 }

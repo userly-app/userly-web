@@ -124,12 +124,10 @@ const dialogVisible = computed({
 const isLoading = ref(false)
 const showWarning = ref(false)
 
-// Handle confirm action
 const handleConfirm = async () => {
   isLoading.value = true
   try {
     await emit('confirm')
-    // El parent cerrará el dialog después de procesar
   } catch (error) {
     console.error('Error in confirmation:', error)
     isLoading.value = false
@@ -143,7 +141,6 @@ const handleCancel = () => {
   }
 }
 
-// Watch for dialog opening to trigger warning animation
 watch(() => props.modelValue, (isOpen) => {
   if (isOpen) {
     showWarning.value = false
@@ -156,13 +153,11 @@ watch(() => props.modelValue, (isOpen) => {
   }
 })
 
-// Método público para finalizar loading
 const finishLoading = () => {
   isLoading.value = false
   emit('update:modelValue', false)
 }
 
-// Exponer método para uso del parent
 defineExpose({
   finishLoading
 })
@@ -174,7 +169,6 @@ defineExpose({
   padding: 1rem 0;
 }
 
-/* Loading State */
 .loading-state {
   display: flex;
   flex-direction: column;
@@ -202,7 +196,6 @@ defineExpose({
   font-weight: 500;
 }
 
-/* Confirmation State */
 .confirmation-state {
   display: flex;
   flex-direction: column;
@@ -262,7 +255,6 @@ defineExpose({
   font-weight: 500;
 }
 
-/* Actions */
 .confirm-actions {
   display: flex;
   gap: 1rem;
@@ -345,7 +337,6 @@ defineExpose({
   }
 }
 
-/* Responsive */
 @media (max-width: 768px) {
   .confirm-actions {
     flex-direction: column;

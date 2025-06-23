@@ -6,7 +6,7 @@ export function createAppRouter() {
         routes: [
             {
                 path: '/',
-                redirect: '/home' // Añadir redirección a home
+                redirect: '/home'
             },
             {
                 path: '/home',
@@ -25,18 +25,16 @@ export function createAppRouter() {
                 }
             },
             {
-                path: '/:pathMatch(.*)*', // Ruta para manejar 404
+                path: '/:pathMatch(.*)*',
                 redirect: '/home'
             }
         ]
     });
 
-    // Corregir el guardia para llamar a next()
     router.beforeEach((to, from, next) => {
-        // Actualizar el título
         let baseTitle = 'Users Management';
         document.title = `${baseTitle} | ${to.meta.title || 'App'}`;
-        next(); // Es crucial llamar a next() para continuar la navegación
+        next();
     });
 
     return router;
