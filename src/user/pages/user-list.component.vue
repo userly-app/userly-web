@@ -9,7 +9,7 @@
             <span>Restaurar eliminados</span>
           </button>
 
-          <button class="action-btn new-user-btn" @click="showAddDialog = true">
+          <button class="action-btn new-user-btn" @click="showCreateUserDialog">
             <i class="pi pi-user-plus"></i>
             <span>Nuevo Usuario</span>
           </button>
@@ -25,8 +25,8 @@
           <span class="table-count">{{ users.length }} usuarios</span>
         </div>
         <div class="search-box">
-          <i class="pi pi-search search-icon"></i>
           <input type="text" v-model="searchQuery" class="search-input" placeholder="Buscar usuarios..." />
+          <i class="pi pi-search search-icon"></i>
         </div>
       </div>
 
@@ -45,7 +45,12 @@
         </tr>
         </thead>
         <tbody>
-        <tr v-for="user in filteredUsers" :key="user.id">
+        <tr 
+          v-for="(user, index) in filteredUsers" 
+          :key="user.id"
+          :style="{ '--row-index': index }"
+          class="table-row-animated"
+        >
           <td data-label="Usuario">
             <div class="user-info">
               <div class="user-avatar">{{ getInitials(user.name) }}</div>
@@ -78,16 +83,24 @@
       </table>
     </div>
 
-    <!-- Dialogs -->
-    <pv-dialog header="Nuevo Usuario" v-model:visible="showAddDialog" :modal="true">
-      <CreateUserModal @submit="addUser" @cancel="showAddDialog = false" />
-    </pv-dialog>
+    <!-- Diálogos Profesionales -->
+    <UserFormDialog
+      v-model="dialogs.userForm.visible"
+      :mode="dialogs.userForm.mode"
+      :user="dialogs.userForm.user"
+      @submit="handleUserSubmit"
+      @cancel="hideUserFormDialog"
+      ref="userFormDialogRef"
+    />
 
-    <pv-dialog header="Editar Usuario" v-model:visible="showEditDialog" :modal="true">
-      <CreateUserModal :user="selectedUser" @submit="updateUser" @cancel="showEditDialog = false" />
-    </pv-dialog>
+    <ConfirmDialog
+      v-model="dialogs.confirm.visible"
+      v-bind="dialogs.confirm.config"
+      @confirm="confirmAction"
+      @cancel="cancelAction"
+      ref="confirmDialogRef"
+    />
 
-    <pv-confirm-dialog />
     <pv-toast />
   </div>
 </template>
@@ -95,21 +108,32 @@
 <script setup>
 
 import { ref, computed, onMounted } from 'vue'
-import { useConfirm } from 'primevue/useconfirm'
 import { useToast } from 'primevue/usetoast'
-import CreateUserModal from '../components/create-user-modal.component.vue'
+import { useUserDialogs } from '../../shared/composables/useDialogs.js'
+import UserFormDialog from '../../shared/components/UserFormDialog.component.vue'
+import ConfirmDialog from '../../shared/components/ConfirmDialog.component.vue'
 import { UserService } from '../services/user.service.js'
 import { UserEntity } from '../model/user.entity.js'
 
 const users = ref([])
 const searchQuery = ref('')
-const showAddDialog = ref(false)
-const showEditDialog = ref(false)
-const selectedUser = ref(null)
 const loading = ref(false)
-const confirm = useConfirm()
 const toast = useToast()
 const userService = new UserService()
+
+// Usar el composable de diálogos
+const {
+  dialogs,
+  confirmDialogRef,
+  userFormDialogRef,
+  showCreateUserDialog,
+  showEditUserDialog,
+  confirmDeleteUser,
+  hideUserFormDialog,
+  confirmAction,
+  cancelAction,
+  finishConfirmLoading
+} = useUserDialogs()
 
 const getUsers = async () => {
   try {
@@ -157,87 +181,75 @@ const restoreDeletedUsers = async () => {
 
 const getInitials = name => name.split(' ').map(n => n[0]).join('').slice(0, 2)
 
-const addUser = async (userData) => {
+// Manejar envío de formulario de usuario (crear o editar)
+const handleUserSubmit = async (userData) => {
   try {
-    loading.value = true
-    const newUser = await userService.createUser(userData)
-    users.value.push(newUser)
-    showAddDialog.value = false
-    toast.add({
-      severity: 'success',
-      summary: 'Usuario creado',
-      detail: `${userData.name} ha sido añadido correctamente`,
-      life: 3000
-    })
+    if (userData.id) {
+      // Actualizar usuario existente
+      const mergedUser = new UserEntity(
+        userData.id,
+        userData.name,
+        userData.username,
+        userData.email,
+        userData.phone
+      )
+
+      await userService.updateUser(mergedUser)
+      users.value = users.value.map(u => u.id === userData.id ? mergedUser : u)
+
+      toast.add({
+        severity: 'success',
+        summary: 'Usuario actualizado',
+        detail: `${userData.name} ha sido actualizado correctamente`,
+        life: 3000
+      })
+    } else {
+      // Crear nuevo usuario
+      const newUser = await userService.createUser(userData)
+      users.value.push(newUser)
+
+      toast.add({
+        severity: 'success',
+        summary: 'Usuario creado',
+        detail: `${userData.name} ha sido añadido correctamente`,
+        life: 3000
+      })
+    }
   } catch (error) {
+    console.error('Error al procesar usuario:', error)
     toast.add({
       severity: 'error',
       summary: 'Error',
-      detail: 'No se pudo añadir el usuario',
+      detail: userData.id ? 'No se pudo actualizar el usuario' : 'No se pudo crear el usuario',
       life: 3000
     })
-  } finally {
-    loading.value = false
+    throw error // Re-lanzar para que el diálogo maneje el error
   }
 }
 
-const editUser = user => {
-  selectedUser.value = { ...user }
-  showEditDialog.value = true
+// Editar usuario
+const editUser = (user) => {
+  showEditUserDialog(user)
 }
-const updateUser = async (updated) => {
+// Confirmar eliminación de usuario
+const confirmDelete = async (user) => {
   try {
-    loading.value = true
-
-    // Crear una nueva instancia con los datos actualizados
-    const mergedUser = new UserEntity(
-        updated.id,
-        updated.name,
-        updated.username,
-        updated.email,
-        updated.phone
-    )
-
-    await userService.updateUser(mergedUser)
-
-    // Actualizar la lista local usando map para crear un nuevo array
-    users.value = users.value.map(u => u.id === updated.id ? mergedUser : u)
-
-    showEditDialog.value = false
-    toast.add({
-      severity: 'success',
-      summary: 'Usuario actualizado',
-      detail: `${updated.name} ha sido actualizado correctamente`,
-      life: 3000
-    })
+    await confirmDeleteUser(user)
+    await deleteUser(user.id, user.name)
+    finishConfirmLoading()
   } catch (error) {
-    console.error('Error al actualizar:', error)
-    toast.add({
-      severity: 'error',
-      summary: 'Error',
-      detail: 'No se pudo actualizar el usuario',
-      life: 3000
-    })
-  } finally {
-    loading.value = false
+    if (error.message !== 'Dialog cancelled') {
+      console.error('Error al eliminar usuario:', error)
+      finishConfirmLoading()
+    }
   }
 }
-const confirmDelete = user => {
-  confirm.require({
-    message: `¿Estás seguro que deseas eliminar a ${user.name}?`,
-    header: 'Confirmar eliminación',
-    icon: 'pi pi-exclamation-triangle',
-    acceptClass: 'p-button-danger',
-    accept: () => deleteUser(user.id),
-    reject: () => {}
-  })
-}
 
-const deleteUser = async (id) => {
+const deleteUser = async (id, userName) => {
   try {
-    loading.value = true
     await userService.deleteUser(id)
     users.value = users.value.filter(u => u.id !== id)
+    
     toast.add({
       severity: 'success',
       summary: 'Usuario eliminado',
@@ -251,8 +263,7 @@ const deleteUser = async (id) => {
       detail: 'No se pudo eliminar el usuario',
       life: 3000
     })
-  } finally {
-    loading.value = false
+    throw error
   }
 }
 </script>
@@ -327,8 +338,27 @@ const deleteUser = async (id) => {
   justify-content: space-between;
   align-items: center;
   padding: 1.5rem 2rem;
-  background-color: #b0b0b0;
+  background: linear-gradient(135deg, #e67e22 0%, #d35400 100%);
   border: none;
+  position: relative;
+  overflow: hidden;
+}
+
+.table-toolbar::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+  animation: shimmer 4s infinite;
+}
+
+@keyframes shimmer {
+  0% { left: -100%; }
+  50% { left: 100%; }
+  100% { left: 100%; }
 }
 
 .table-toolbar-left {
@@ -339,14 +369,19 @@ const deleteUser = async (id) => {
 .table-title {
   margin: 0;
   font-size: 1.25rem;
-  font-weight: 600;
-  color: #000000;
+  font-weight: 700;
+  color: white;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  position: relative;
+  z-index: 1;
 }
 
 .table-count {
-  color: #000000;
+  color: rgba(255, 255, 255, 0.9);
   font-size: 0.875rem;
   margin-top: 0.25rem;
+  position: relative;
+  z-index: 1;
 }
 
 .search-box {
@@ -358,34 +393,46 @@ const deleteUser = async (id) => {
 .search-icon {
   position: absolute;
   left: 16px;
-  color: #000000;
-  z-index: 1;
+  color: rgba(255, 255, 255, 0.8);
+  z-index: 2;
+  transition: all 0.3s ease;
 }
 
 .search-input {
   padding: 0.75rem 1rem 0.75rem 2.75rem;
   border: none;
-  border-bottom: 2px solid var(--color-accent);
-  border-radius: 0;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px 8px 0 0;
   width: 300px;
   font-size: 0.9rem;
-  background-color: transparent;
-  color: #000000;
- transition: var(--transition-normal);
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  position: relative;
+  z-index: 1;
+  backdrop-filter: blur(10px);
 }
 
 .search-input:focus {
   outline: none;
-  border-bottom-color: black;
-  box-shadow: none;
+  border-bottom-color: rgba(255, 255, 255, 0.8);
+  background-color: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  transform: translateY(-1px);
+}
+
+.search-input:focus + .search-icon {
+  color: white;
+  transform: scale(1.1);
 }
 
 .search-input:hover {
-  border-bottom-color: black;
+  border-bottom-color: rgba(255, 255, 255, 0.6);
+  background-color: rgba(255, 255, 255, 0.15);
 }
 
 .search-input::placeholder {
-  color: var(--color-text-secondary);
+  color: rgba(255, 255, 255, 0.7);
 }
 
 .data-table {
@@ -397,13 +444,26 @@ const deleteUser = async (id) => {
 .data-table th {
   text-align: left;
   padding: 1.25rem 2rem;
-  color: var(--color-text-secondary);
-  font-weight: 600;
+  color: var(--color-text-primary);
+  font-weight: 700;
   font-size: 0.875rem;
-  background-color: var(--color-background-alt);
+  background: linear-gradient(135deg, rgba(230, 126, 34, 0.1) 0%, rgba(211, 84, 0, 0.05) 100%);
   border: none;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.8px;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.data-table th::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, #e67e22, #d35400);
+  opacity: 0.3;
 }
 
 .data-table td {
@@ -415,16 +475,31 @@ const deleteUser = async (id) => {
 }
 
 .data-table tr {
-  transition: var(--transition-normal);
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  position: relative;
+}
+
+.data-table tbody tr:nth-child(even) {
+  background-color: rgba(230, 126, 34, 0.03);
+}
+
+.data-table tbody tr:nth-child(odd) {
+  background-color: transparent;
 }
 
 .data-table tr:hover {
-  background-color: var(--color-background) !important;
-  transform: scale(1.01);
+  background-color: rgba(230, 126, 34, 0.08) !important;
+  transform: translateY(-2px) scale(1.002);
+  box-shadow: 0 8px 25px rgba(230, 126, 34, 0.12);
+  z-index: 1;
 }
 
 .data-table tr:hover td {
-  background-color: var(--color-background);
+  background-color: transparent;
+}
+
+.data-table tr:active {
+  transform: translateY(-1px) scale(1.001);
 }
 
 .user-info {
@@ -436,21 +511,47 @@ const deleteUser = async (id) => {
   width: 45px;
   height: 45px;
   border-radius: 50%;
-  background-color: var(--color-primary);
+  background: linear-gradient(135deg, #e67e22, #d35400);
   color: white;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-weight: 600;
+  font-weight: 700;
   margin-right: 1rem;
   font-size: 0.9rem;
-  box-shadow: var(--shadow-sm);
-  transition: var(--transition-normal);
+  box-shadow: 0 4px 12px rgba(230, 126, 34, 0.3);
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  position: relative;
+  animation: subtle-pulse 6s ease-in-out infinite;
+}
+
+.user-avatar::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #e67e22, #d35400);
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
 .user-info:hover .user-avatar {
-  transform: scale(1.1);
-  box-shadow: var(--shadow-md);
+  transform: scale(1.15) rotate(5deg);
+  box-shadow: 0 8px 20px rgba(230, 126, 34, 0.4);
+}
+
+.user-info:hover .user-avatar::before {
+  opacity: 0.3;
+}
+
+@keyframes subtle-pulse {
+  0%, 100% { 
+    box-shadow: 0 4px 12px rgba(230, 126, 34, 0.3), 0 0 0 0 rgba(230, 126, 34, 0.4);
+  }
+  50% { 
+    box-shadow: 0 4px 12px rgba(230, 126, 34, 0.3), 0 0 0 4px rgba(230, 126, 34, 0.1);
+  }
 }
 
 .user-details h4 {
@@ -476,11 +577,58 @@ const deleteUser = async (id) => {
   border-radius: 50% !important;
   width: 40px !important;
   height: 40px !important;
-  transition: var(--transition-normal) !important;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+
+.action-buttons .p-button::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transition: all 0.3s ease;
+  transform: translate(-50%, -50%);
 }
 
 .action-buttons .p-button:hover {
-  transform: scale(1.1) !important;
+  transform: scale(1.15) translateY(-2px) !important;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15) !important;
+}
+
+.action-buttons .p-button:hover::before {
+  width: 100%;
+  height: 100%;
+}
+
+.action-buttons .p-button:active {
+  transform: scale(1.05) !important;
+}
+
+/* Botón de editar - azul elegante */
+.action-buttons .p-button:not(.p-button-danger) {
+  background: linear-gradient(135deg, #3498db, #2980b9) !important;
+  border: none !important;
+}
+
+.action-buttons .p-button:not(.p-button-danger):hover {
+  background: linear-gradient(135deg, #2980b9, #1f5f8b) !important;
+  box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4) !important;
+}
+
+/* Botón de eliminar - rojo elegante */
+.action-buttons .p-button.p-button-danger {
+  background: linear-gradient(135deg, #e74c3c, #c0392b) !important;
+  border: none !important;
+}
+
+.action-buttons .p-button.p-button-danger:hover {
+  background: linear-gradient(135deg, #c0392b, #a93226) !important;
+  box-shadow: 0 6px 20px rgba(231, 76, 60, 0.4) !important;
 }
 
 @media (max-width: 992px) {
@@ -655,6 +803,57 @@ const deleteUser = async (id) => {
   color: white;
 }
 
+/* Animación de entrada para las filas */
+.table-row-animated {
+  animation: fadeInUp 0.6s ease-out;
+  animation-delay: calc(var(--row-index) * 0.05s);
+  animation-fill-mode: both;
+}
+
+@keyframes fadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Loading mejorado */
+.loading-container {
+  background: linear-gradient(135deg, rgba(230, 126, 34, 0.05) 0%, rgba(211, 84, 0, 0.02) 100%);
+  border-radius: 12px;
+}
+
+.loading-container i {
+  background: linear-gradient(135deg, #e67e22, #d35400);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: loading-pulse 2s ease-in-out infinite;
+}
+
+@keyframes loading-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+/* Efecto de focus en la tabla */
+.data-table-container:focus-within {
+  box-shadow: 0 0 0 3px rgba(230, 126, 34, 0.2);
+}
+
+/* Transición suave para el contenedor de la tabla */
+.data-table-container {
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.data-table-container:hover {
+  box-shadow: 0 8px 30px rgba(230, 126, 34, 0.08);
+}
+
 @media (max-width: 768px) {
   .action-panel {
     width: 100%;
@@ -663,6 +862,11 @@ const deleteUser = async (id) => {
   .action-btn {
     flex: 1;
     justify-content: center;
+  }
+  
+  /* Animación más rápida en mobile */
+  .table-row-animated {
+    animation-delay: calc(var(--row-index) * 0.03s);
   }
 }
 </style>
